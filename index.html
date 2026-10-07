@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>KALKULATOR ANALISIS 4D PRO</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#07111f;
+    color:#fff;
+}
+
+.container{
+    width:100%;
+    max-width:900px;
+    margin:auto;
+    padding:15px;
+}
+
+.header{
+    background:linear-gradient(135deg,#123c68,#07111f);
+    border:1px solid #245b91;
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+    margin-bottom:15px;
+}
+
+.header h1{
+    margin:0;
+    color:#00e5ff;
+    font-size:25px;
+}
+
+.header p{
+    color:#b8c7d9;
+    margin:8px 0 0;
+}
+
+.card{
+    background:#0d1b2a;
+    border:1px solid #1e3b58;
+    border-radius:14px;
+    padding:15px;
+    margin-bottom:15px;
+}
+
+.card h2{
+    margin-top:0;
+    color:#00e5ff;
+    font-size:19px;
+}
+
+textarea{
+    width:100%;
+    min-height:130px;
+    resize:vertical;
+    background:#06101c;
+    border:1px solid #31516e;
+    border-radius:10px;
+    color:white;
+    padding:12px;
+    font-size:16px;
+    outline:none;
+}
+
+textarea:focus{
+    border-color:#00e5ff;
+}
+
+button{
+    width:100%;
+    border:0;
+    border-radius:10px;
+    padding:14px;
+    margin-top:12px;
+    background:linear-gradient(135deg,#00c6ff,#0072ff);
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:active{
+    transform:scale(.98);
+}
+
+.result-title{
+    color:#ffd54a;
+    font-size:18px;
+    margin-bottom:10px;
+}
+
+.number-box{
+    background:#06101c;
+    border:1px solid #244765;
+    border-radius:10px;
+    padding:12px;
+    margin-bottom:12px;
+}
+
+.number-box strong{
+    color:#00e5ff;
+}
+
+.digit-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:10px;
+}
+
+.digit{
+    min-width:36px;
+    text-align:center;
+    padding:9px 6px;
+    border-radius:7px;
+    background:#14283b;
+    border:1px solid #2e526e;
+    font-weight:bold;
+}
+
+.weak{
+    opacity:.55;
+}
+
+.medium{
+    opacity:.8;
+}
+
+.strong{
+    background:#0d5662;
+    border-color:#00e5ff;
+    color:#fff;
+}
+
+.rank-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+    font-size:14px;
+}
+
+.rank-table th,
+.rank-table td{
+    border:1px solid #29465e;
+    padding:9px 5px;
+    text-align:center;
+}
+
+.rank-table th{
+    background:#132b41;
+    color:#00e5ff;
+}
+
+.bbfs{
+    font-size:28px;
+    letter-spacing:6px;
+    text-align:center;
+    color:#ffd54a;
+    font-weight:bold;
+    padding:12px;
+}
+
+.top4d{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+}
+
+.combo{
+    background:#14283b;
+    border:1px solid #2b506d;
+    border-radius:8px;
+    padding:11px;
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+    color:#fff;
+}
+
+.small{
+    font-size:12px;
+    color:#9fb2c5;
+    margin-top:10px;
+}
+
+.hidden{
+    display:none;
+}
+
+.footer{
+    text-align:center;
+    color:#73879b;
+    font-size:12px;
+    padding:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+    <h1>🎯 KALKULATOR ANALISIS 4D PRO</h1>
+    <p>Statistik Digit • BBFS 6 • AS • COP • KEPALA • EKOR</p>
+</div>
+
+<div class="card">
+    <h2>📊 Masukkan Result Sebelumnya</h2>
+
+    <textarea id="results"
+    placeholder="Masukkan hasil 4D sebelumnya.
+
+Contoh:
+1234
+5678
+9012
+3456
+7890
+1122
+3344
+5566
+7788
+9900"></textarea>
+
+    <button onclick="hitung()">⚡ ANALISIS SEKARANG</button>
+
+    <div class="small">
+        Masukkan angka 4 digit satu per baris. Bisa juga dipisahkan dengan spasi atau koma.
+    </div>
+</div>
+
+<div id="output" class="hidden">
+
+<div class="card">
+    <div class="result-title">🏆 BBFS 6 DIGIT</div>
+    <div id="bbfs" class="bbfs">------</div>
+</div>
+
+<div class="card">
+    <div class="result-title">🔥 TOP 4D</div>
+    <div id="top4d" class="top4d"></div>
+</div>
+
+<div class="card">
+    <div class="result-title">⚔️ ANGKA TARUNG — AS</div>
+    <div id="as"></div>
+</div>
+
+<div class="card">
+    <div class="result-title">⚔️ ANGKA TARUNG — COP</div>
+    <div id="cop"></div>
+</div>
+
+<div class="card">
+    <div class="result-title">⚔️ ANGKA TARUNG — KEPALA</div>
+    <div id="kepala"></div>
+</div>
+
+<div class="card">
+    <div class="result-title">⚔️ ANGKA TARUNG — EKOR</div>
+    <div id="ekor"></div>
+</div>
+
+<div class="card">
+    <div class="result-title">📈 RANKING KEKUATAN DIGIT 0–9</div>
+    <div id="overall"></div>
+</div>
+
+</div>
+
+<div class="footer">
+    Kalkulator ini merupakan alat analisis statistik/simulasi.
+    Tidak ada metode yang dapat menjamin angka togel akan keluar.
+</div>
+
+</div>
+
+<script>
+
+function ambilData(){
+
+    let text=document.getElementById("results").value;
+
+    let data=text.match(/\d{4}/g) || [];
+
+    return data;
+}
+
+
+function hitung(){
+
+    let data=ambilData();
+
+    if(data.length===0){
+        alert("Masukkan minimal satu hasil 4D.");
+        return;
+    }
+
+    let posisi={
+        as:Array(10).fill(0),
+        cop:Array(10).fill(0),
+        kepala:Array(10).fill(0),
+        ekor:Array(10).fill(0)
+    };
+
+    let total=Array(10).fill(0);
+
+    data.forEach(num=>{
+
+        let d=num.split("").map(Number);
+
+        posisi.as[d[0]]++;
+        posisi.cop[d[1]]++;
+        posisi.kepala[d[2]]++;
+        posisi.ekor[d[3]]++;
+
+        d.forEach(x=>total[x]++);
+
+    });
+
+    tampilkanPosisi("as",posisi.as);
+    tampilkanPosisi("cop",posisi.cop);
+    tampilkanPosisi("kepala",posisi.kepala);
+    tampilkanPosisi("ekor",posisi.ekor);
+
+    tampilkanOverall(total);
+
+    let ranking=[0,1,2,3,4,5,6,7,8,9]
+        .sort((a,b)=>total[b]-total[a]);
+
+    let bbfs=ranking.slice(0,6);
+
+    document.getElementById("bbfs").innerText=
+        bbfs.join("");
+
+    buatTop4D(bbfs,posisi);
+
+    document.getElementById("output").classList.remove("hidden");
+}
+
+
+function tampilkanPosisi(id,arr){
+
+    let ranking=[0,1,2,3,4,5,6,7,8,9]
+        .sort((a,b)=>arr[a]-arr[b]);
+
+    let html="";
+
+    html+="<div class='number-box'>";
+    html+="<strong>Terlemah → Terkuat</strong>";
+
+    html+="<div class='digit-list'>";
+
+    ranking.forEach((digit,index)=>{
+
+        let cls="weak";
+
+        if(index>=7) cls="strong";
+        else if(index>=4) cls="medium";
+
+        html+=`
+        <div class="digit ${cls}">
+            ${digit}
+        </div>`;
+
+    });
+
+    html+="</div>";
+
+    html+=`
+    <table class="rank-table">
+    <tr>
+        <th>Ranking</th>
+        <th>Digit</th>
+        <th>Frekuensi</th>
+    </tr>`;
+
+    ranking.forEach((digit,index)=>{
+
+        html+=`
+        <tr>
+            <td>${index+1}</td>
+            <td>${digit}</td>
+            <td>${arr[digit]}</td>
+        </tr>`;
+
+    });
+
+    html+="</table>";
+    html+="</div>";
+
+    document.getElementById(id).innerHTML=html;
+}
+
+
+function tampilkanOverall(total){
+
+    let ranking=[0,1,2,3,4,5,6,7,8,9]
+        .sort((a,b)=>total[a]-total[b]);
+
+    let html=`
+    <table class="rank-table">
+    <tr>
+        <th>Urutan</th>
+        <th>Digit</th>
+        <th>Frekuensi</th>
+        <th>Status</th>
+    </tr>`;
+
+    ranking.forEach((digit,index)=>{
+
+        let status="Lemah";
+
+        if(index>=7)
+            status="Sangat Kuat";
+        else if(index>=4)
+            status="Sedang";
+
+        html+=`
+        <tr>
+            <td>${index+1}</td>
+            <td><b>${digit}</b></td>
+            <td>${total[digit]}</td>
+            <td>${status}</td>
+        </tr>`;
+
+    });
+
+    html+="</table>";
+
+    document.getElementById("overall").innerHTML=html;
+}
+
+
+function buatTop4D(bbfs,posisi){
+
+    let kepala=bbfs.slice(0,4);
+    let ekor=bbfs.slice(2,6);
+
+    let kombinasi=[];
+
+    /*
+      Membuat kombinasi berdasarkan digit BBFS.
+      Ini merupakan kombinasi statistik sederhana,
+      bukan prediksi pasti.
+    */
+
+    for(let i=0;i<bbfs.length;i++){
+
+        for(let j=0;j<bbfs.length;j++){
+
+            if(i===j) continue;
+
+            for(let k=0;k<bbfs.length;k++){
+
+                if(k===i || k===j) continue;
+
+                for(let l=0;l<bbfs.length;l++){
+
+                    if(l===i || l===j || l===k) continue;
+
+                    kombinasi.push(
+                        ""+
+                        bbfs[i]+
+                        bbfs[j]+
+                        bbfs[k]+
+                        bbfs[l]
+                    );
+
+                }
+
+            }
+
+        }
+
+    }
+
+    /*
+      Ambil 10 kombinasi pertama.
+    */
+
+    kombinasi=kombinasi.slice(0,10);
+
+    let html="";
+
+    kombinasi.forEach((x,i)=>{
+
+        html+=`
+        <div class="combo">
+            ${i+1}. ${x}
+        </div>`;
+
+    });
+
+    document.getElementById("top4d").innerHTML=html;
+}
+
+</script>
+
+</body>
+  </html>
